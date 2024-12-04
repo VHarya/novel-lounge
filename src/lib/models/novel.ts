@@ -5,7 +5,7 @@ export interface Novel {
     readonly id:string;
     title:string;
     author:any|User;
-    categories:any|Category;
+    categories:any[]|Category;
     created:string|Date;
     expand:any|Object|null;
 }
