@@ -22,16 +22,25 @@ export const actions: Actions = {
         let confirmPasswordWrong = false;
 
         if (!username || !firstName || !lastName || !email || !password || !confirmPassword) {
-            missingFields = true;
+            return fail(400, {
+                data: { username, firstName, lastName, email },
+                message: "Semua field harus di isi!",
+                success: false,
+            });
         }
         if (password!.toString().length < 8) {
-            passwordTooShort = true;
+            return fail(400, {
+                data: { username, firstName, lastName, email },
+                message: "Kata Sandi minimal memiliki 8 karakter",
+                success: false,
+            });
         }
-        if (password !== confirmPassword) {
-            confirmPasswordWrong = true
-        }
-        if (missingFields || passwordTooShort || confirmPasswordWrong) {
-            return fail(400, { username, firstName, lastName, email, errors: { missingFields, passwordTooShort, confirmPasswordWrong } });
+        if (confirmPassword !== password) {
+            return fail(400, {
+                data: { username, firstName, lastName, email },
+                message: "Konfirmasi Kata Sandi berbeda dari Kata Sandi",
+                success: false,
+            });
         }
 
         try {
@@ -47,12 +56,18 @@ export const actions: Actions = {
             }
     
             const record = await pb.collection('users').create(data);
-        } catch (error) {
-            console.log(error);
-            return fail(500, { username, firstName, lastName, email, errors: { missingFields, passwordTooShort, confirmPasswordWrong } });
+        } catch (error:any) {
+            return fail(error.code, {
+                data: { username, firstName, lastName, email },
+                message: error.message,
+                success: false,
+            });
         }
 
-        // return redirect(300, '/login?new=true');
-        return { success: true };
+        return {
+            data: null,
+            message: null,
+            success: true,
+        };
     },
 };

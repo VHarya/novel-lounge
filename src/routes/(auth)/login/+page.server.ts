@@ -1,5 +1,5 @@
 import { pb } from '$lib/utils/pocketbase';
-import { fail, redirect } from '@sveltejs/kit';
+import { fail, json, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load = (async () => {
@@ -12,18 +12,29 @@ export const actions: Actions = {
 
         const email = data.get('email');
         const password = data.get('password');
-
-        let verificationSuccess = false;
-        if (email && password) {
-            verificationSuccess = true;
+        
+        if (!email || !password) {
+            return fail(400, {
+                data: { email },
+                message: "Email harus lengkap!",
+                success: false,
+            });
         }
         
-        if (!verificationSuccess) {
-            return fail(400, { email, missing: true })
+        try {
+            await pb.collection('users').authWithPassword(email!.toString(), password!.toString());
+        } catch (error:any) {
+            return fail(error.code, {
+                data: { email },
+                message: error.message,
+                success: false,
+            })
         }
-        
-        pb.collection('users').authWithPassword(email!.toString(), password!.toString());
 
-        redirect(300, '/');
+        return {
+            data: null,
+            message: null,
+            success: true,
+        };
     },
 };
