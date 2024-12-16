@@ -4,8 +4,10 @@ import type { User } from "./user";
 export interface Novel {
     readonly id:string;
     title:string;
+    synopsis:string;
     author:any|User;
     categories:any[]|Category;
-    created:string|Date;
+    cover:string;
+    created:Date|string;
     expand:any|Object|null;
 }

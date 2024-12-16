@@ -3,6 +3,6 @@ export interface User {
     username:string;
     firstName:string;
     lastName:string;
-    profilePicture:string;
+    avatar:string;
     created:Date|string;
 }

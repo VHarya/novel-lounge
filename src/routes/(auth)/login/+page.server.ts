@@ -1,4 +1,3 @@
-import { pb } from '$lib/utils/pocketbase';
 import { fail, json, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -7,34 +6,24 @@ export const load = (async () => {
 }) satisfies PageServerLoad;
 
 export const actions: Actions = {
-    default: async ({ request }) => {
-        const data = await request.formData();
+    default: async ({ locals, request }) => {
+        const formData = await request.formData();
+        const data = Object.fromEntries([...formData]);
 
-        const email = data.get('email');
-        const password = data.get('password');
-        
-        if (!email || !password) {
-            return fail(400, {
-                data: { email },
-                message: "Email harus lengkap!",
-                success: false,
-            });
-        }
-        
         try {
-            await pb.collection('users').authWithPassword(email!.toString(), password!.toString());
+            await locals.pb.collection('users').authWithPassword(data.email.toString(), data.password.toString());
         } catch (error:any) {
-            return fail(error.code, {
-                data: { email },
-                message: error.message,
-                success: false,
-            })
+            console.log("PB Error: ", error.response.data);
+            return {
+                error: true,
+                message: error.response.message,
+                data: {
+                    username: data.username,
+                    email: data.email,
+                },
+            };
         }
 
-        return {
-            data: null,
-            message: null,
-            success: true,
-        };
+        throw redirect(303, '/');
     },
 };

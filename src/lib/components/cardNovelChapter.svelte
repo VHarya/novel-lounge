@@ -6,7 +6,7 @@
     import IconCoins from 'phosphor-svelte/lib/Coins';
 
     import PlaceholderImage from '$lib/images/cover-placeholder.png';
-    import { formatToTimeAgo } from '$lib/utils/relative-time-formatter';
+    import { formatToTimeAgo } from '$lib/utils';
     
     const { novel } = $props();
 
@@ -20,8 +20,8 @@
 </script>
 
 <div class="h-64 w-full p-4 flex rounded bg-background-alt">
-    <a href="/novel/{novel.id}" class="h-full aspect-[5/7] rounded">
-        <img src="{PlaceholderImage}" alt="placeholder_image.png" class="rounded">
+    <a href="/novel/{novel.id}" class="h-full aspect-[5/7] inline-block">
+        <img src="{novel.cover || PlaceholderImage}" alt="placeholder_image.png" class="h-full aspect-[5/7] object-cover rounded">
     </a>
     <div class="w-full ml-4 flex flex-col justify-between">
         <a href="/novel/{novel.id}">

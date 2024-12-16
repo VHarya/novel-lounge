@@ -4,8 +4,9 @@ export interface Chapter {
     readonly id:string;
     volumeNumber:number;
     chapterNumber:number;
-    title:string;
+    chapterTitle:string;
     novel:any|Novel;
     created:string|Date;
+    price:number;
     expand:any|Object;
 }

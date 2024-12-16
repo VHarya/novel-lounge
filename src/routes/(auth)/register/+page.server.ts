@@ -1,4 +1,3 @@
-import { pb } from '$lib/utils/pocketbase';
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -7,67 +6,47 @@ export const load = (async () => {
 }) satisfies PageServerLoad;
 
 export const actions: Actions = {
-    default: async ({ request }) => {
-        const form = await request.formData();
+    register: async ({ locals, request }) => {
+        const formData = await request.formData();
+        const data = Object.fromEntries([...formData]);
 
-        const username = form.get('username');
-        const firstName = form.get('firstName');
-        const lastName = form.get('lastName');
-        const email = form.get('email');
-        const password = form.get('password');
-        const confirmPassword = form.get('confirmPassword');
-
-        let missingFields = false;
-        let passwordTooShort = false;
-        let confirmPasswordWrong = false;
-
-        if (!username || !firstName || !lastName || !email || !password || !confirmPassword) {
-            return fail(400, {
-                data: { username, firstName, lastName, email },
-                message: "Semua field harus di isi!",
-                success: false,
-            });
+        if (data.password.toString().length < 5) {
+            return {
+                error: true,
+                message: "Password needs at least 5 characters!",
+                data: {
+                    username: data.username,
+                    email: data.email,
+                },
+            }
         }
-        if (password!.toString().length < 8) {
-            return fail(400, {
-                data: { username, firstName, lastName, email },
-                message: "Kata Sandi minimal memiliki 8 karakter",
-                success: false,
-            });
-        }
-        if (confirmPassword !== password) {
-            return fail(400, {
-                data: { username, firstName, lastName, email },
-                message: "Konfirmasi Kata Sandi berbeda dari Kata Sandi",
-                success: false,
-            });
+
+        if (data.password !== data.passwordConfirm) {
+            return {
+                error: true,
+                message: "Confirm password doesn't match!",
+                data: {
+                    username: data.username,
+                    email: data.email,
+                },
+            }
         }
 
         try {
-            const data = {
-                username: username!.toString(),
-                firstName: firstName!.toString(),
-                lastName: lastName!.toString(),
-                email: email!.toString(),
-                emailVisibility: false,
-                verified: false,
-                password: password!.toString(),
-                passwordConfirm: confirmPassword!.toString()
-            }
-    
-            const record = await pb.collection('users').create(data);
+            await locals.pb.collection('users').create(data);
+            locals.pb.authStore.clear();
         } catch (error:any) {
-            return fail(error.code, {
-                data: { username, firstName, lastName, email },
-                message: error.message,
-                success: false,
-            });
+            console.log("PB Error: ", error.response.data);
+            return {
+                error: true,
+                message: error.response.message,
+                data: {
+                    username: data.username,
+                    email: data.email,
+                },
+            };
         }
 
-        return {
-            data: null,
-            message: null,
-            success: true,
-        };
+        throw redirect(303, '/login');
     },
 };

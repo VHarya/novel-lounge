@@ -1,4 +1,13 @@
-export function formatToTimeAgo(date: Date | string): string {
+export const serializeNonPOJOs = (obj:any) => {
+	return JSON.parse(JSON.stringify(obj));
+};
+
+export function formatToShortDate(date:Date|string): string {
+    const dt = new Date(date);
+    return `${dt.getDate().toString().padStart(2, '0')}-${dt.getMonth().toString().padStart(2, '0')}-${dt.getFullYear().toString()}`
+}
+
+export function formatToTimeAgo(date:Date|string): string {
     const now = new Date();
     const convertedDate = new Date(date);
     const seconds = Math.floor((now.getTime() - convertedDate.getTime()) / 1000);

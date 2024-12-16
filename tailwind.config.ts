@@ -16,13 +16,15 @@ export default {
       },
       colors: {
         'background': '#1A1A1A',
-        'background-alt': '#202020',
+        'background-alt': '#222222',
         'foreground': '#2F2F2F',
+        'foreground-alt': '#252525',
         'accent': '#219EBC',
       },
       fontFamily: {
         'inter': 'inter, sans-serif',
         'joan': 'joan, serif',
+        'lexend': 'Lexend, serif'
       }
     }
   },
