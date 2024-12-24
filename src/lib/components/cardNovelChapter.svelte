@@ -6,22 +6,14 @@
     import IconCoins from 'phosphor-svelte/lib/Coins';
 
     import PlaceholderImage from '$lib/images/cover-placeholder.png';
-    import { formatToTimeAgo } from '$lib/utils';
+    import { formatChapterTitle, formatToTimeAgo } from '$lib/utils';
     
     const { novel } = $props();
-
-    function formatChapterTitle(volume:number, chapter:number, title:string) {
-        const volumeNumber = volume != 0 ? `Vol. ${volume}` : '';
-        const chapterNumber = chapter != 0 ? `Ch. ${chapter}` : '';
-        const separator = volumeNumber || chapterNumber ? ' - ' : '';
-
-        return volumeNumber + ' ' + chapterNumber + separator + title;
-    }
 </script>
 
 <div class="h-64 w-full p-4 flex rounded bg-background-alt">
     <a href="/novel/{novel.id}" class="h-full aspect-[5/7] inline-block">
-        <img src="{novel.cover || PlaceholderImage}" alt="placeholder_image.png" class="h-full aspect-[5/7] object-cover rounded">
+        <img src="{novel.cover || PlaceholderImage}" alt="placeholder_image.png" class="h-full aspect-[5/7] object-contain rounded bg-foreground-alt">
     </a>
     <div class="w-full ml-4 flex flex-col justify-between">
         <a href="/novel/{novel.id}">
@@ -34,8 +26,8 @@
         {#each novel.chapters as chapter}
             <div class="w-full min-w-[4rem] h-fit mb-2 px-3 py-2 flex items-center rounded bg-foreground">
                 <div class="w-full min-w-[1rem] flex flex-col grow">
-                    <a href="/chapter/{chapter.id}" class="truncate text-sm font-bold">
-                        {formatChapterTitle(chapter.volumeNumber, chapter.chapterNumber, chapter.chapterTitle)}
+                    <a href="/chapters/{chapter.id}" class="truncate text-sm font-bold">
+                        {formatChapterTitle(chapter.chapter, chapter.title)}
                     </a>
                     <span class="text-xs">{formatToTimeAgo(chapter.created)}</span>
                 </div>

@@ -6,8 +6,8 @@ export interface Novel {
     title:string;
     synopsis:string;
     author:any|User;
-    categories:any[]|Category;
-    cover:string;
+    categories:string[];
+    cover:string|any;
     created:Date|string;
     expand:any|Object|null;
 }

@@ -8,8 +8,11 @@ export const handle: Handle = async ({ event, resolve }) => {
 
     if (event.locals.pb.authStore.isValid) {
         event.locals.user = event.locals.pb.authStore.record;
-        if (!event.locals.user.avatar.startsWith(PB_FILES_URL)) {
-            event.locals.user.avatar = `${PB_FILES_URL}/${event.locals.pb.authStore.record!.collectionId}/${event.locals.user.id}/${event.locals.user.avatar}`;
+        if (event.locals.user.avatar) {
+            if (!event.locals.user.avatar.startsWith(PB_FILES_URL)){
+                const user = event.locals.user;
+                event.locals.user.avatar = `${PB_FILES_URL}/users/${user.id}/${user.avatar}`;
+            }
         }
     }
     else {

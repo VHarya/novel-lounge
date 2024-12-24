@@ -2,45 +2,54 @@ export const serializeNonPOJOs = (obj:any) => {
 	return JSON.parse(JSON.stringify(obj));
 };
 
+export function convertFilenameToFileURL(baseFilesUrl:string, collection:string, itemId:string, filename:string,): string {
+    return `${baseFilesUrl}/${collection}/${itemId}/${filename}`;
+}
+
 export function formatToShortDate(date:Date|string): string {
     const dt = new Date(date);
     return `${dt.getDate().toString().padStart(2, '0')}-${dt.getMonth().toString().padStart(2, '0')}-${dt.getFullYear().toString()}`
 }
 
-export function formatToTimeAgo(date:Date|string): string {
+export function formatFileSize(bytes:number) {
+    const units = ['bytes', 'KB', 'MB', 'GB', 'TB'];
+    let i = 0;
+    
+    while (bytes >= 1024 && i < units.length - 1) {
+      bytes /= 1024;
+      i++;
+    }
+    
+    return `${bytes.toFixed(2)} ${units[i]}`;
+}
+
+export function formatChapterTitle(chapterNumber:number|null, chapterTitle:string) {
+    return `Chapter ${chapterNumber} - ${chapterTitle}`.trim();
+}
+
+export function formatToTimeAgo(date:Date|string) : string {
     const now = new Date();
     const convertedDate = new Date(date);
     const seconds = Math.floor((now.getTime() - convertedDate.getTime()) / 1000);
-    
-    if (seconds < 60) {
-        return `${seconds} seconds ago`;
+
+    const units = [
+        { name: "second", value: 60 },
+        { name: "minute", value: 60 },
+        { name: "hour", value: 24 },
+        { name: "day", value: 7 },
+        { name: "week", value: 4 },
+        { name: "month", value: 12 },
+        { name: "year", value: Infinity }
+    ];
+
+    let time = seconds;
+    for (const unit of units) {
+        if (time < unit.value) {
+            const plural = unit.name + (time === 1 ? "" : "s");
+            return `${time} ${plural} ago`;
+        }
+        time = Math.floor(time / unit.value);
     }
-    
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) {
-        return `${minutes} minutes ago`;
-    }
-    
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) {
-        return `${hours} hours ago`;
-    }
-    
-    const days = Math.floor(hours / 24);
-    if (days < 7) {
-        return `${days} days ago`;
-    }
-    
-    const weeks = Math.floor(days / 7);
-    if (weeks < 4) {
-        return `${weeks} weeks ago`;
-    }
-    
-    const months = Math.floor(days / 30);
-    if (months < 12) {
-        return `${months} months ago`;
-    }
-    
-    const years = Math.floor(days / 365);
-    return `${years} years ago`;
+
+    return `${time} years ago`; // Fallback in case of years
 }

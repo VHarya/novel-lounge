@@ -9,28 +9,25 @@
     import IconBookOpen from 'phosphor-svelte/lib/BookOpen';
     import IconCoin from 'phosphor-svelte/lib/Coins';
     import IconSad from 'phosphor-svelte/lib/MaskSad';
+    import IconAdd from 'phosphor-svelte/lib/Plus';
+    import IconEdit from 'phosphor-svelte/lib/Pencil';
+    import IconDelete from 'phosphor-svelte/lib/Trash';
 
     import PlaceholderImage from '$lib/images/cover-placeholder.png';
-    import { formatToTimeAgo } from '$lib/utils';
-    import { page } from '$app/stores';
+    import { formatChapterTitle, formatToTimeAgo } from '$lib/utils';
+    import { page } from '$app/state';
     import { goto } from '$app/navigation';
 
     let { data }: { data: PageData } = $props();
     
     const novel = data.novel;
+    const user = data.user;
     let chapters = $state(data.chapters);
 
     let backgroundImage = PlaceholderImage;
 
-    function formatChapterTitle(volumeNumber:number|null, chapterNumber:number|null, chapterTitle:string) {
-        const volume = volumeNumber ? `Vol. ${volumeNumber}` : '';
-        const chapterNum = chapterNumber ? `Ch. ${chapterNumber}` : '';
-        const dash = volume || chapterNum ? '-' : '';
-        return `${volume} ${chapterNum} ${dash} ${chapterTitle}`.trim();
-    }
 
-
-    const searchParams = new URLSearchParams($page.url.searchParams);
+    const searchParams = new URLSearchParams(page.url.searchParams);
     let currentSort = $state(searchParams.get('sort') || 'newest');
     let currentPage = $state(parseInt(searchParams.get('page') || '1'));
     $effect(() => {
@@ -54,12 +51,12 @@
     }
 </script>
 
-<div class="h-96 my-8 relative flex" style="--bg-image: url({backgroundImage})">
-    <div class="h-full aspect-[5/7]">
-        <img src="{novel.cover || PlaceholderImage}" alt="placeholder_image.png" class="h-full w-full rounded-xl">
+<div class="my-8 flex flex-col 2xl:flex-row">
+    <div class="w-fit h-96 aspect-[5/7]">
+        <img src="{novel.cover || PlaceholderImage}" alt="placeholder_image.png" class="h-full w-full rounded-xl object-contain">
     </div>
     
-    <div class="h-full ml-4 flex flex-col">
+    <div class="h-full mt-4 2xl:mt-0 2xl:ml-4 flex flex-col">
         <h1 class="text-3xl font-bold">{novel.title}</h1>
         <a href="/user/{novel.expand.author.id}">
             <div class="mb-1 flex items-center">
@@ -81,11 +78,17 @@
                 <span class="ml-1 text-sm">20k</span>
             </div>
         </div>
-        <div class="h-full my-2 overflow-scroll text-sm">
+        <div class="h-60 my-2 overflow-scroll text-sm">
             {@html novel.synopsis}
         </div>
         <div class="flex space-x-2">
-            <button class="p-2 flex items-center space-x-1 rounded bg-accent">
+            {#if user.id === novel.author}
+                <a href="/chapters/create/{novel.id}" class="p-2 flex items-center space-x-1 rounded bg-accent">
+                    <IconAdd size="1.15rem" weight="bold"/>
+                    <span>Create New Chapter</span>
+                </a>
+            {/if}
+            <button class:bg-foreground={user.id === novel.author} class="p-2 flex items-center space-x-1 rounded bg-accent">
                 <IconBookmark size="1.2rem"/>
                 <span>Add to Bookmark</span>
             </button>
@@ -119,12 +122,21 @@
             {#each chapters.items as chapter}
                 <li class="px-4 py-2 flex items-center rounded bg-foreground">
                     <div class="mr-4 flex-grow flex flex-col">
-                        <a href="/chapter/123" class="h-fit inline-block font-bold">
-                            <h4>{formatChapterTitle(chapter.volumeNumber, chapter.chapterNumber, chapter.chapterTitle)}</h4>
+                        <a href="/chapters/{chapter.id}" class="h-fit inline-block font-bold">
+                            <h4>{formatChapterTitle(chapter.chapter, chapter.title)}</h4>
                         </a>
                         <span class="text-sm">{formatToTimeAgo(chapter.created)}</span>
                     </div>
-                    {#if chapter.price > 0}
+                    {#if user.id === novel.author}
+                        <div class="flex space-x-2">
+                            <a href="/chapters/edit/{novel.id}/{chapter.id}" class="h-fit p-2 flex items-center rounded bg-warning">
+                                <IconEdit />
+                            </a>
+                            <a href="/chapters/delete/{chapter.id}" class="h-fit p-2 flex items-center rounded bg-error">
+                                <IconDelete />
+                            </a>
+                        </div>
+                    {:else if chapter.price > 0}
                         <div class="h-fit px-2 py-1 flex items-center rounded bg-accent">
                             <IconCoin />
                             <span class="ml-1">{chapter.price}</span>

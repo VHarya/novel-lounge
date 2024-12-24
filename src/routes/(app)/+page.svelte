@@ -1,74 +1,49 @@
 <script lang="ts">
     import type { PageData } from './$types';
-
     import { dragscroll } from "@svelte-put/dragscroll";
 
-    import IconPerson from 'phosphor-svelte/lib/UserCircle';
-    import IconEye from 'phosphor-svelte/lib/Eye';
-    import IconBookmark from 'phosphor-svelte/lib/BookmarkSimple';
-    import IconStar from 'phosphor-svelte/lib/Star';
-    import IconBookOpen from 'phosphor-svelte/lib/BookOpen';
-    import IconFlag from 'phosphor-svelte/lib/Flag';
+    import IconCaretLeft from 'phosphor-svelte/lib/CaretLeft';
+    import IconCaretRight from 'phosphor-svelte/lib/CaretRight';
     import IconError from 'phosphor-svelte/lib/WarningOctagon';
-
-    import PlaceholderImage from '$lib/images/cover-placeholder.png';
 
     import NovelWithChapterCard from '$lib/components/cardNovelChapter.svelte';
     import NovelCard from '$lib/components/cardNovel.svelte';
     
     let { data }: { data: PageData } = $props();
+
+    function scrollList(direction:string) {
+        const list = document.getElementById('new-releases')!;
+        const scrollAmount = 500; // How far the list should scroll when a button is pressed
+
+        if (direction === 'left') {
+            list.scrollBy({
+                left: -scrollAmount,
+                behavior: 'smooth', // Optional: Smooth scroll
+            });
+        } else if (direction === 'right') {
+            list.scrollBy({
+                left: scrollAmount,
+                behavior: 'smooth', // Optional: Smooth scroll
+            });
+        }
+    }
 </script>
 
-<div class="h-fit mb-8">
-    <h2 class="mb-4 text-4xl font-lexend">Popular Titles</h2>
-    <div class="p-4 relative flex rounded bg-background-alt">
-        <div class="h-[20rem] aspect-[5/7]">
-            <img src="{PlaceholderImage}" alt="placeholder_image.png" class="h-full w-full rounded">
+
+<div class="max-w-full mb-16 flex flex-col">
+    <h2 class="mb-4 text-4xl font-lexend">New Releases</h2>
+    <div class="w-fit h-fit max-w-full relative">
+        <div id="new-releases" class="w-fit h-fit max-w-full flex gap-x-6 overflow-x-scroll overflow-y-hidden" use:dragscroll>
+            {#each data.newNovels as item}
+                <NovelCard novel={item} />
+            {/each}
         </div>
-        <div class="h-[20rem] ml-4 flex flex-col">
-            <h3 class="text-3xl font-bold">Novel Title</h3>
-            <div class="mb-1 flex items-center">
-                <IconPerson size={18} weight="bold" />
-                <span class="ml-1 text-sm">Writer Name</span>
-            </div>
-            <div class="flex space-x-2">
-                <div class="flex items-center">
-                    <IconEye size={16} weight="bold" />
-                    <span class="ml-1 text-sm">20k</span>
-                </div>
-                <div class="flex items-center">
-                    <IconBookmark size={16} weight="bold" />
-                    <span class="ml-1 text-sm">20k</span>
-                </div>
-                <div class="flex items-center">
-                    <IconStar size={16} weight="bold" />
-                    <span class="ml-1 text-sm">20k</span>
-                </div>
-            </div>
-            <p class="my-2 overflow-scroll text-sm">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque  non tempor lectus, ac malesuada nunc. Vivamus risus felis, vulputate ut  sodales eu, lobortis nec magna. Suspendisse sagittis felis eget purus  eleifend ultricies ac eu quam. Sed nulla felis, bibendum commodo lacus  vitae, vulputate feugiat est. Proin pellentesque nunc nec nibh  ullamcorper congue. Etiam et viverra ex, sit amet rutrum felis. Mauris  in ligula quis libero condimentum condimentum. Donec imperdiet ipsum eu  odio gravida, eget semper elit malesuada.
-                <br>
-                Suspendisse ullamcorper id tellus a dignissim. Sed facilisis quis elit a tincidunt. Nunc consequat vulputate elit, eget egestas turpis. Aenean  eu dolor sem. Pellentesque ac nunc tempus, ultrices sem vel, bibendum  elit. Nam vulputate eros quam, at rhoncus turpis condimentum sed.  Curabitur dignissim quis orci at elementum. Curabitur vitae est congue,  malesuada odio a, efficitur lorem. Aliquam erat volutpat. Maecenas  suscipit, dui eget dictum congue, massa ipsum viverra augue, venenatis  dapibus nisi metus eu lorem. Cras fringilla elementum vestibulum. Ut  euismod eleifend nisl, vitae luctus odio ultrices eu. Nullam id  vulputate ex, id scelerisque dolor. Vestibulum ante ipsum primis in  faucibus orci luctus et ultrices posuere cubilia curae; Praesent ut  gravida quam. Suspendisse ut elementum mi.
-            </p>
-            <div class="flex space-x-2">
-                <button class="p-2 flex items-center space-x-1 rounded bg-accent">
-                    <IconBookmark size="1.2rem"/>
-                    <span>Add to Bookmark</span>
-                </button>
-                <button class="p-2 flex items-center space-x-1 rounded bg-foreground">
-                    <IconBookOpen size="1.2rem"/>
-                    <span>Read First Chapter</span>
-                </button>
-                <button class="p-2 flex items-center space-x-1 rounded bg-foreground">
-                    <IconStar size="1.2rem"/>
-                    <span>Rate</span>
-                </button>
-                <button class="p-2 flex items-center space-x-1 rounded bg-foreground">
-                    <IconFlag size="1.2rem"/>
-                    <span>Report</span>
-                </button>
-            </div>
-        </div>
+        <button onclick={() => scrollList('left')} class="p-2 absolute top-1/3 -left-8 rounded-full shadow bg-foreground">
+            <IconCaretLeft size="1.5rem" weight="bold"/>
+        </button>
+        <button onclick={() => scrollList('right')} class="p-2 absolute top-1/3 -right-8 rounded-full shadow bg-foreground">
+            <IconCaretRight size="1.5rem" weight="bold"/>
+        </button>
     </div>
 </div>
 
@@ -89,15 +64,6 @@
             </div>
         </div>
     {/if}
-</div>
-
-<div class="max-w-full mt-16 flex flex-col">
-    <h2 class="mb-4 text-4xl font-lexend">Newest Novels</h2>
-    <div class="max-w-full w-fit h-fit flex gap-8 overflow-x-scroll overflow-y-hidden" use:dragscroll>
-        {#each data.newNovels as item}
-            <NovelCard novel={item} />
-        {/each}
-    </div>
 </div>
 
 

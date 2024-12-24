@@ -18,12 +18,13 @@ export const load = (async ({ locals, params, url }) => {
     }
 
     const chapters = await locals.pb.collection('chapters').getList<Chapter>(page, 20, {
-        filter: `novel = '${novelId}'`,
-        sort: sort === 'newest' ? '-volumeNumber,-chapterNumber' : 'volumeNumber,chapterNumber',
+        filter: `novel.id = '${novelId}'`,
+        sort: sort === 'newest' ? '-chapter' : 'chapter',
     });
 
     return {
         novel: novel,
-        chapters: chapters
+        chapters: chapters,
+        userId: locals.user,
     };
 }) satisfies PageServerLoad;
