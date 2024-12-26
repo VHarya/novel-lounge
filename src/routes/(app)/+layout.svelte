@@ -6,17 +6,24 @@
 	import { Toaster } from 'svelte-sonner';
 
 	import IconSearch from "phosphor-svelte/lib/MagnifyingGlass";
-    import Logo from "$lib/images/icon.png";
-	import DefaultProfile from "$lib/images/placeholder-profile.png"
+    import Logo from "$lib/images/logo-no-text.png";
+	import DefaultProfile from "$lib/images/default-profile.png"
 
 	let { data, children }: {data: PageData, children: Snippet} = $props();
 	const user = data.user;
 	let showMenu = $state(false);
+	let showSearch = $state(false);
 
-	// ClickOutside
-	let parentNode: any = $state();
-	function closeModal() {
+	// ClickOutside Menu
+	let menuParentNode: any = $state();
+	function closeMenu() {
 		showMenu = false;
+	}
+
+	// ClickOutside Search
+	let searchParentNode: any = $state();
+	function closeSearch() {
+		showSearch = false;
 	}
 
 	async function logout() {
@@ -30,8 +37,8 @@
 <Toaster position="bottom-center" theme="dark" duration={3000}/>
 
 {#if showMenu}
-	<div bind:this={parentNode} class="w-screen h-screen z-50 absolute bg-black/35"></div>
-	<div use:clickoutside={{ limit: { parent: parentNode } }} onclickoutside={closeModal} class="w-[12rem] p-4 absolute top-16 right-[20rem] z-50 flex flex-col rounded shadow bg-foreground">
+	<div bind:this={menuParentNode} class="w-screen h-screen z-50 absolute bg-black/50"></div>
+	<div use:clickoutside={{ limit: { parent: menuParentNode } }} onclickoutside={closeMenu} class="w-[12rem] p-4 absolute top-16 right-10 md:right-[20rem] z-50 flex flex-col rounded shadow bg-foreground">
 		<a href="/user/{data.user.id}" class="flex flex-col items-center">
 			<img src="{data.user.avatar || DefaultProfile}" alt="User's Profile" class="w-20 h-20 mb-2 object-cover rounded-full">
 			<span class="text-xl font-bold">{data.user?.username}</span>
@@ -39,14 +46,14 @@
 		
 		<hr class="my-3">
 
-		<a href="/user/{data.user.id}" onclick={closeModal} class="py-0.5 text-left transition-all hover:font-medium">My Bookmarks</a>
-		<a href="/user/{data.user.id}" onclick={closeModal} class="py-0.5 text-left transition-all hover:font-medium">My Profile</a>
-		<a href="/my-novels" onclick={closeModal} class="py-0.5 text-left transition-all hover:font-medium">My Novels</a>
+		<a href="/user/{data.user.id}" onclick={closeMenu} class="py-0.5 text-left transition-all hover:font-medium">My Bookmarks</a>
+		<a href="/user/{data.user.id}" onclick={closeMenu} class="py-0.5 text-left transition-all hover:font-medium">My Profile</a>
+		<a href="/my-novels" onclick={closeMenu} class="py-0.5 text-left transition-all hover:font-medium">My Novels</a>
 
 		<hr class="my-3">
 
-		<a href="/coin-store" onclick={closeModal} class="py-0.5 text-left transition-all hover:font-medium">Coin Store</a>
-		<a href="/help" onclick={closeModal} class="py-0.5 text-left transition-all hover:font-medium">Help</a>
+		<a href="/coin-store" onclick={closeMenu} class="py-0.5 text-left transition-all hover:font-medium">Coin Store</a>
+		<a href="/help" onclick={closeMenu} class="py-0.5 text-left transition-all hover:font-medium">Help</a>
 
 		<hr class="my-3">
 		
@@ -56,15 +63,30 @@
 	</div>
 {/if}
 
+{#if showSearch}
+	<div bind:this={searchParentNode} class="w-screen h-screen z-50 absolute bg-black/50"></div>
+	<div use:clickoutside={{ limit: { parent: searchParentNode } }} onclickoutside={closeSearch} class="p-4 absolute top-16 right-7 md:right-[20rem] z-50 flex flex-col rounded shadow bg-foreground">
+		<!-- <input type="search" name="searchbar"> -->
+		<div class="mr-2 flex items-center relative">
+			<IconSearch class="absolute right-[10px]" weight="bold" size={18} color="#ffffff" />
+			<input type="search" placeholder="Search" name="searchbar" class="w-[20rem] pl-3.5 pr-8 py-1.5 rounded-md border-transparent font-medium text-white placeholder:text-white focus:placeholder:text-transparent bg-foreground-alt">
+		</div>
+	</div>
+{/if}
+
+
 <nav class="w-full px-10 md:px-32 lg:px-48 xl:px-60 2xl:px-96 py-4 border-b-2 border-accent flex justify-between bg-background">
 	<a href="/">
 		<img src="{Logo}" alt="logo.png" class="h-[2.5rem]">
 	</a>
-	<div class="flex space-x-2">
-		<div class="flex items-center relative">
+	<div class="flex">
+		<div class="mr-2 hidden md:flex items-center relative">
 			<IconSearch class="absolute right-[10px]" weight="bold" size={18} color="#ffffff" />
 			<input type="search" placeholder="Search" name="searchbar" class="w-[20rem] pl-3.5 pr-8 py-1.5 rounded-md border-transparent font-medium text-white placeholder:text-white focus:placeholder:text-transparent bg-foreground-alt">
 		</div>
+		<button type="button" onclick={() => showSearch = !showSearch} class="mr-4 md:hidden">
+			<IconSearch weight="bold" size={20} color="#ffffff" />
+		</button>
 		<div class="flex items-center">
 			{#if user}
 				<button onclick="{() => showMenu = !showMenu}" class="rounded-full overflow-clip">

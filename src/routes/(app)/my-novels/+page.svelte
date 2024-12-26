@@ -16,7 +16,7 @@
         const confirmed = confirm('Are you sure? The data will be lost permanently.');
         
         if (confirmed) {
-            fetch(`/novel/delete/${novelId}`, { method: 'get' })
+            fetch(`/novels/delete/${novelId}`, { method: 'get' })
                 .then((res) => {
                     if (!res.ok) {
                         toast.error(`Failed to delete ${res.text()}`);
@@ -31,7 +31,7 @@
 
 <div class="mb-5 flex justify-between items-center">
     <h1 class="text-4xl font-bold font-lexend">My Novels</h1>
-    <a href="/novel/create" class="h-fit p-2 flex items-center space-x-2 rounded bg-accent">
+    <a href="/novels/create" class="h-fit p-2 flex items-center space-x-2 rounded bg-accent">
         <IconCreate size="1rem" weight="bold"/>
         <span>New Novel</span>
     </a>
@@ -72,15 +72,15 @@
                         <span class="text-sm">{formatToShortDate(novel.created)}</span>
                     </div>
                     <div class="flex flex-col text-center space-y-2">
-                        <a href="/novel/{novel.id}" class="w-full px-2 py-1 rounded text-sm font-bold bg-accent/95 hover:bg-accent">Show Details</a>
+                        <a href="/novels/{novel.id}" class="w-full px-2 py-1 rounded text-sm font-bold bg-accent/95 hover:bg-accent">Show Details</a>
                         <div class="flex space-x-2">
-                            <a href="/novel/edit/{novel.id}" class="w-full px-2 py-1 rounded text-sm font-bold bg-yellow-500/95 hover:bg-yellow-500">Edit Novel</a>
+                            <a href="/novels/edit/{novel.id}" class="w-full px-2 py-1 rounded text-sm font-bold bg-yellow-500/95 hover:bg-yellow-500">Edit Novel</a>
                             <!-- <form action="?/delete" method="post" onsubmit={onSubmit} class="w-full">
                                 <input type="text" name="novel-id" value={novel.id} hidden>
                                 <button type="submit" class="w-full px-2 py-1 rounded text-sm font-bold bg-red-500/95 hover:bg-red-500">Delete Novel</button>
                             </form> -->
                             <button type="button" onclick={() => deleteNovel(novel.id)} class="w-full px-2 py-1 rounded text-sm font-bold bg-red-500/95 hover:bg-red-500">Delete Novel</button>
-                            <!-- <a href="/novel/delete/{novel.id}" class="w-full px-2 py-1 rounded text-sm font-bold bg-red-500/95 hover:bg-red-500">Delete Novel</a> -->
+                            <!-- <a href="/novels/delete/{novel.id}" class="w-full px-2 py-1 rounded text-sm font-bold bg-red-500/95 hover:bg-red-500">Delete Novel</a> -->
                         </div>
                     </div>
                 </div>

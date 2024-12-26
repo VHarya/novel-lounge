@@ -70,6 +70,11 @@ export const actions: Actions = {
                 chapter: newChapter.id,
                 content: content,
             });
+
+            const today = new Date().toISOString();
+            await locals.pb.collection('novels').update(novelId, {
+                lastChapterUpdate: today.replace('T', ' '),
+            });
         } catch (error) {
             console.log(error);
             return {
@@ -79,6 +84,6 @@ export const actions: Actions = {
             };
         }
 
-        redirect(303, `/novel/${novelId}`);
+        redirect(303, `/novels/${novelId}`);
     }
 };

@@ -6,7 +6,7 @@
     import IconCaretRight from 'phosphor-svelte/lib/CaretRight';
     import IconError from 'phosphor-svelte/lib/WarningOctagon';
 
-    import NovelWithChapterCard from '$lib/components/cardNovelChapter.svelte';
+    import NovelChapterCard from '$lib/components/cardNovelChapter.svelte';
     import NovelCard from '$lib/components/cardNovel.svelte';
     
     let { data }: { data: PageData } = $props();
@@ -52,7 +52,7 @@
     {#if data.newChapters != undefined}
         <div class="max-h-[50rem] grid 3xl:grid-cols-2 3xl:grid-rows-3 grid-cols-1 grid-rows-1 bg-background-alt">
             {#each data.newChapters as item}
-                <NovelWithChapterCard novel={item} />
+                <NovelChapterCard novel={item} />
             {/each}
         </div>
     {:else}

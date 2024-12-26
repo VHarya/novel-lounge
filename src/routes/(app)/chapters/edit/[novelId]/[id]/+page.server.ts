@@ -93,6 +93,6 @@ export const actions: Actions = {
             };
         }
 
-        redirect(303, `/novel/${novelId}`);
+        redirect(303, `/novels/${novelId}`);
     }
 };

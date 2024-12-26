@@ -2,7 +2,7 @@
     import type { Snippet } from 'svelte';
     import type { LayoutData } from './$types';
 
-    import Logo from '$lib/images/icon.png'
+    import Logo from '$lib/images/logo-text.png'
 
     let { data, children }: { data: LayoutData, children: Snippet } = $props();
 </script>
@@ -13,7 +13,7 @@
 </svelte:head>
 
 
-<nav class="w-screen px-28 py-4 flex justify-between items-center overflow-hidden">
+<nav class="w-screen px-60 py-4 flex justify-between items-center overflow-hidden">
     <a href="/">
         <img src={Logo} alt="Novel Lounge's Logo" class="h-12">
     </a>
@@ -29,7 +29,7 @@
 
 {@render children()}
 
-<footer class="px-28 py-10">
+<footer class="px-60 py-10">
     <h2 class="mb-4 text-3xl font-joan">Novel Lounge</h2>
     <p>
         © 2024 Novel Lounge. Semua hak dilindungi. <br>
