@@ -19,7 +19,7 @@ export default {
         'background-alt': '#1F1F1F',
         'foreground': '#2F2F2F',
         'foreground-alt': '#252525',
-        'accent': '#219EBC',
+        'accent': '#18748C',
         'success': '#059669',
         'warning': '#d97706',
         'error': '#b91c1c',

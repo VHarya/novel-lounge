@@ -14,18 +14,18 @@
     import IconDelete from 'phosphor-svelte/lib/Trash';
 
     import PlaceholderImage from '$lib/images/cover-placeholder.png';
+    import ModalRating from '$lib/components/modalRate.svelte';
     import { formatChapterTitle, formatToTimeAgo } from '$lib/utils';
     import { page } from '$app/state';
     import { goto } from '$app/navigation';
 
+
     let { data }: { data: PageData } = $props();
-    
     const novel = data.novel;
     const user = data.user;
+
     let chapters = $state(data.chapters);
-
-    let backgroundImage = PlaceholderImage;
-
+    let showRatingModal = $state(false);
 
     const searchParams = new URLSearchParams(page.url.searchParams);
     let currentSort = $state(searchParams.get('sort') || 'newest');
@@ -51,12 +51,19 @@
     }
 </script>
 
-<div class="my-8 flex flex-col 2xl:flex-row">
-    <div class="w-fit h-96 aspect-[5/7]">
+
+<svelte:head>
+    <title>{novel.title}</title>
+</svelte:head>
+
+<ModalRating bind:show={showRatingModal} onSubmit={(rating: any) => {console.log(`Rating: ${rating}`)}}/>
+
+<div class="xl:h-80 2xl:h-96 my-8 flex flex-col xl:flex-row">
+    <div class="w-fit h-full aspect-[5/7]">
         <img src="{novel.cover || PlaceholderImage}" alt="placeholder_image.png" class="h-full w-full rounded-xl object-contain">
     </div>
     
-    <div class="h-full mt-4 2xl:mt-0 2xl:ml-4 flex flex-col">
+    <div class="h-full mt-4 xl:mt-0 xl:ml-4 flex flex-col">
         <h1 class="text-3xl font-bold">{novel.title}</h1>
         <a href="/user/{novel.expand.author.id}">
             <div class="mb-1 flex items-center">
@@ -78,17 +85,17 @@
                 <span class="ml-1 text-sm">20k</span>
             </div>
         </div>
-        <div class="h-60 my-2 overflow-scroll text-sm">
+        <div class="h-full max-h-full my-2 pr-3.5 overflow-scroll text-sm">
             {@html novel.synopsis}
         </div>
         <div class="flex space-x-2">
-            {#if user.id === novel.author}
+            {#if user && user.id === novel.author}
                 <a href="/chapters/create/{novel.id}" class="p-2 flex items-center space-x-1 rounded bg-accent">
                     <IconAdd size="1.15rem" weight="bold"/>
                     <span>Create New Chapter</span>
                 </a>
             {/if}
-            <button class:bg-foreground={user.id === novel.author} class="p-2 flex items-center space-x-1 rounded bg-accent">
+            <button class="p-2 flex items-center space-x-1 rounded bg-foreground">
                 <IconBookmark size="1.2rem"/>
                 <span>Add to Bookmark</span>
             </button>
@@ -96,7 +103,7 @@
                 <IconBookOpen size="1.2rem"/>
                 <span>Read First Chapter</span>
             </button>
-            <button class="p-2 flex items-center space-x-1 rounded bg-foreground">
+            <button onclick={() => showRatingModal = !showRatingModal} class="p-2 relative flex items-center space-x-1 rounded bg-foreground">
                 <IconStar size="1.2rem"/>
                 <span>Rate</span>
             </button>
@@ -127,7 +134,7 @@
                         </a>
                         <span class="text-sm">{formatToTimeAgo(chapter.created)}</span>
                     </div>
-                    {#if user.id === novel.author}
+                    {#if user && user.id === novel.author}
                         <div class="flex space-x-2">
                             <a href="/chapters/edit/{novel.id}/{chapter.id}" class="h-fit p-2 flex items-center rounded bg-warning">
                                 <IconEdit />
@@ -137,22 +144,22 @@
                             </a>
                         </div>
                     {:else if chapter.price > 0}
-                        <div class="h-fit px-2 py-1 flex items-center rounded bg-accent">
+                        <div class="w-14 h-fit px-2 py-1 flex justify-center items-center rounded bg-accent">
                             <IconCoin />
                             <span class="ml-1">{chapter.price}</span>
                         </div>
                     {:else}
-                        <span class="h-fit px-2 py-1 flex items-center rounded font-bold bg-green-600">Free</span>
+                        <span class="w-14 h-fit px-2 py-1 flex justify-center items-center rounded bg-green-800">Free</span>
                     {/if}
                 </li>
             {/each}
         </ul>
     {:else}
         <div class="my-10 flex flex-col items-center">
-            <IconSad size="8rem" weight="light"/>
-            <div class="w-[20rem] mt-4 flex flex-col items-center text-center">
+            <IconSad class="w-16 h-16 mb-2" weight="light"/>
+            <div class="w-96 flex flex-col items-center text-center">
                 <h2 class="text-xl font-bold">No Chapters</h2>
-                <p class="text-sm">The author hasn't uploaded any chapters yet, check back later.</p>
+                <p>The author hasn't uploaded any chapters yet, check back later.</p>
             </div>
         </div>
     {/if}

@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { ActionData, PageData } from './$types';
-    import Logo from '$lib/images/icon.png';
+    import Logo from '$lib/images/logo-text.png';
 
 	let { data, form }: { data: PageData, form: ActionData } = $props();
 </script>

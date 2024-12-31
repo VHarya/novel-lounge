@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { ActionData, PageData } from './$types';
-    import Logo from '$lib/images/icon.png';
+    import Logo from '$lib/images/logo-text.png';
 
 	let { data, form }: { data: PageData, form: ActionData } = $props();
 </script>
@@ -16,6 +16,17 @@
             <div class="mb-2">
                 <label for="username" class="font-semibold">Username</label>
                 <input type="text" name="username" value="{form?.data.username}" required class="w-full border-none rounded text-white bg-foreground-alt">
+            </div>
+            
+            <div class="mb-2 flex">
+                <div class="w-full">
+                    <label for="firstName" class="font-semibold">First Name</label>
+                    <input type="text" name="firstName" value="{form?.data.firstName}" required class="w-full border-none rounded text-white bg-foreground-alt">
+                </div>
+                <div class="w-full">
+                    <label for="lastName" class="font-semibold">Last Name</label>
+                    <input type="text" name="lastName" value="{form?.data.lastName}" required class="w-full border-none rounded text-white bg-foreground-alt">
+                </div>
             </div>
 
             <div class="mb-2">

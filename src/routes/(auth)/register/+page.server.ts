@@ -16,6 +16,8 @@ export const actions: Actions = {
                 message: "Password needs at least 5 characters!",
                 data: {
                     username: data.username,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
                     email: data.email,
                 },
             }
@@ -27,16 +29,24 @@ export const actions: Actions = {
                 message: "Confirm password doesn't match!",
                 data: {
                     username: data.username,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
                     email: data.email,
                 },
             }
         }
 
         try {
-            await locals.pb.collection('users').create(data);
+            const newUser = await locals.pb.collection('users').create(data);
+
+            await locals.pb.collection('wallet').create({
+                user: newUser.id,
+                coins: 50,
+            });
+
             locals.pb.authStore.clear();
         } catch (error:any) {
-            console.log("PB Error: ", error.response.data);
+            console.log("PB Error: ", JSON.stringify(error));
             return {
                 error: true,
                 message: error.response.message,

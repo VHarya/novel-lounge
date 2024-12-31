@@ -10,7 +10,7 @@
     let chapterValue:number = $state(data.latestChapter);
     let titleValue:string = $state(data.chapter.title);
     let contentValue:string = $state(data.chapter.content);
-    let priceValue:boolean = $state(true);
+    let priceValue:boolean = $state(data.chapter.price == 0);
 
     let formElement: HTMLFormElement;
     

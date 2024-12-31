@@ -56,13 +56,13 @@
     <div class="h-full py-4 flex flex-col justify-end border-b-[1px]">
         <h2 class="mb-1 text-lg font-bold font-lexend">Novel Guidelines:</h2>
         <h3 class="text-sm font-semibold font-lexend">General:</h3>
-        <ul class="ml-4 mb-1.5 list-disc text-sm font-medium">
+        <ul class="ml-4 mb-1.5 list-disc text-sm">
             <li>Make sure to follow the community guidelines</li>
             <li>Do not create duplicate entries (Search before creating)</li>
             <li>Synopsis are optional but it is recommended to have one</li>
         </ul>
         <h3 class="text-sm font-semibold font-lexend">Cover file requirements and limits:</h3>
-        <ul class="ml-4 list-disc text-sm font-medium">
+        <ul class="ml-4 list-disc text-sm">
             <li>Portrait image is preffered</li>
             <li>Maximum image size is 5MB</li>
             <li>Supported image formats are JPEG & PNG</li>

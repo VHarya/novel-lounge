@@ -1,20 +1,34 @@
 <script lang="ts">
-    import { formatChapterTitle } from '$lib/utils';
     import type { PageData } from './$types';
+    import IconBackArrow from 'phosphor-svelte/lib/ArrowLeft';
+    import { formatChapterTitle } from '$lib/utils';
 
     let { data }: { data: PageData } = $props();
-    const chapter = data.chapter;
-    const chapterContent = data.chapterContent;
-    
-    let isPreviousAvailable:boolean = $state(true);
 </script>
 
-<h1 class="mb-4 text-xl font-bold">{formatChapterTitle(chapter.volumeNumber, chapter.chapterNumber, chapter.chapterTitle)}</h1>
 
-<article class="mb-6 prose">{@html chapterContent.content}</article>
+<svelte:head>
+    <title>Ch. {data.chapter.chapter} | {data.novel.title}</title>
+</svelte:head>
 
-<div class="flex justify-center space-x-6">
-    <a href="#" class="px-6 py-2 flex rounded-md font-bold bg-foreground-alt/90 hover:bg-foreground-alt">Last Chapter</a>
-    <a href="#" class="px-6 py-2 flex rounded-md font-bold bg-accent/90 hover:bg-accent">Next Chapter</a>
+<div class="flex flex-col">
+    <a href="/novels/{data.novel.id}" class="mb-2 flex items-center">
+        <IconBackArrow weight="bold" class="w-5 h-5 mr-2"/>
+        <h1 class="text-2xl font-bold">{data.novel.title}</h1>
+    </a>
+    <h2 class="mb-2 text-lg font-medium">{formatChapterTitle(data.chapter.chapter, data.chapter.title)}</h2>
+    <article class="min-h-[50vh] mb-6 prose prose-p:mb-2">{@html data.chapterContent.content}</article>
 </div>
 
+<div class="flex justify-end space-x-4">
+    <a href="/chapters/{data.previousChapter ? data.previousChapter.id : data.chapter.id}" class:disabled={data.previousChapter == null} class="w-40 px-3 py-1.5 flex justify-center text-center rounded-md bg-foreground/80 hover:bg-foreground">Previous Chapter</a>
+    <a href="/chapters/{data.nextChapter ? data.nextChapter.id : data.chapter.id}" class:disabled={data.nextChapter == null} class="w-40 px-3 py-1.5 flex justify-center text-center rounded-md bg-accent/80 hover:bg-accent">Next Chapter</a>
+</div>
+
+<style>
+    .disabled {
+        opacity: 50%;
+        cursor: default;
+        pointer-events: none;
+    }
+</style>

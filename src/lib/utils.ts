@@ -1,3 +1,11 @@
+export const preventDefault = (e: Event) => {
+    e.preventDefault();
+}
+
+export const stopPropagation = (e: Event) => {
+    e.stopPropagation();
+}
+
 export const serializeNonPOJOs = (obj:any) => {
 	return JSON.parse(JSON.stringify(obj));
 };
