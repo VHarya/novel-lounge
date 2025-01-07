@@ -4,11 +4,11 @@
 
 ## Features
 
-- ✔️ **User Accounts**: Create an account to upload your novels and manage your library.
-- ✔️ **Browse Novels**: Explore a wide range of novels uploaded by other users.
-- ✔️ **Novel Upload**: Easily upload your own novels in various formats.
-- ✔️ **Search & Filters**: Find novels by genre, title, author, and more.
-- ❌ **Comment & Rate**: Readers can leave feedback on novels, helping authors improve their work.
+✔️ **User Accounts**: Create an account to upload your novels and manage your library.
+✔️ **Browse Novels**: Explore a wide range of novels uploaded by other users.
+✔️ **Novel Upload**: Easily upload your own novels in various formats.
+✔️ **Search & Filters**: Find novels by genre, title, author, and more.
+❌ **Comment & Rate**: Readers can leave feedback on novels, helping authors improve their work.
 
 ## Technologies Used
 
