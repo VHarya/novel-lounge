@@ -1,10 +1,10 @@
 import type { LayoutServerLoad } from "./$types";
 
 export const load: LayoutServerLoad = async ({ locals }) => {
-    const user = locals.user;
-    if (user) {
-        const wallet = await locals.pb.collection('wallet').getFirstListItem(`user.id = '${user.id}'`);
-        return { user, wallet }
+    if (!locals.user) {
+        return {}
     }
-    return { user }
+
+    const balance = await locals.pb.collection('balances').getOne(locals.user.balance);
+    return { user: locals.user, balance }
 };

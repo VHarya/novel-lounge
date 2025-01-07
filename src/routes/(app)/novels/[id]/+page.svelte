@@ -143,13 +143,11 @@
                                 <IconDelete />
                             </a>
                         </div>
-                    {:else if chapter.price > 0}
+                    {:else if chapter.price > 0 && !chapter.isOwned}
                         <div class="w-14 h-fit px-2 py-1 flex justify-center items-center rounded bg-accent">
                             <IconCoin />
                             <span class="ml-1">{chapter.price}</span>
                         </div>
-                    {:else}
-                        <span class="w-14 h-fit px-2 py-1 flex justify-center items-center rounded bg-green-800">Free</span>
                     {/if}
                 </li>
             {/each}

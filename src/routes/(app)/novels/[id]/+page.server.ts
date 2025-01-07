@@ -22,9 +22,27 @@ export const load = (async ({ locals, params, url }) => {
         sort: sort === 'newest' ? '-chapter' : 'chapter',
     });
 
+    const ownedChapters = await locals.pb.collection('ownedChapters').getList(1, 2, {
+        filter: `chapter.novel.id = '${novel.id}' && user = '${locals.user.id}'`,
+        sort: '-chapter'
+    });
+
     return {
-        novel: novel,
-        chapters: chapters,
         userId: locals.user,
+        novel: novel,
+        chapters: {
+            ...chapters,
+            items: chapters.items.map((chapter) => {
+                for (const ownedChapter of ownedChapters.items) {
+                    if (chapter.id === ownedChapter.chapter) {
+                        chapter.isOwned = true;
+                        return chapter;
+                    }
+    
+                    chapter.isOwned = false;
+                }
+                return chapter;
+            }),
+        },
     };
 }) satisfies PageServerLoad;

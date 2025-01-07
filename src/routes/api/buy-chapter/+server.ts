@@ -5,26 +5,26 @@ export const POST: RequestHandler = async ({ locals, request }) => {
     const requestData = await request.json();
     const chapter = requestData.chapter;
 
-    let wallet = {id: '', coins: 0};
+    let balance = {id: '', coins: 0};
 
     try {
-        wallet = await locals.pb.collection('wallet').getFirstListItem(`user = '${locals.user.id}'`);
+        balance = await locals.pb.collection('balances').getFirstListItem(`user = '${locals.user.id}'`);
     } catch (err) {
-        const body = { message: `Could not retrieve wallet of user (${locals.user.id})` }
+        const body = { message: `Could not retrieve balance.` }
         const option = { status: 500 }
 
         return json(body, option);
     }
 
-    if (wallet.coins < chapter.price) {
-        const body = { message: `Not enough coins in wallet` }
+    if (balance.coins < chapter.price) {
+        const body = { message: `Not enough balance` }
         const option = { status: 400 }
         
         return json(body, option);
     }
 
-    await locals.pb.collection('wallet').update(wallet.id, {
-        coins: wallet.coins - chapter.price,
+    await locals.pb.collection('balances').update(balance.id, {
+        coins: balance.coins - chapter.price,
     });
 
     await locals.pb.collection('ownedChapters').create({

@@ -9,6 +9,7 @@
 	import IconCoins from "phosphor-svelte/lib/Coins";
     import Logo from "$lib/images/logo-no-text.png";
 	import DefaultProfile from "$lib/images/default-profile.png"
+    import { goto } from "$app/navigation";
 
 	let { data, children }: {data: PageData, children: Snippet} = $props();
 	const user = data.user;
@@ -32,6 +33,18 @@
 		showSearch = false;
 	}
 
+	function searchNovel(event:any) {
+		if (event.key !== "Enter") return;
+
+		const title = event.target.value;
+		if (title) {
+			goto(`/novels?title=${title}`);
+		}
+		else {
+			goto('/novels');
+		}
+	}
+
 	async function logout() {
 		const res = await fetch('/logout', { method: 'POST' });
 		if (browser && res.ok) {
@@ -43,15 +56,15 @@
 
 <Toaster position="bottom-center" theme="dark" duration={3000}/>
 
-{#if showMenu}
+{#if data.user && showMenu}
 	<div bind:this={menuParentNode} class="w-screen h-screen z-50 absolute bg-black/50"></div>
 	<div use:clickoutside={{ limit: { parent: menuParentNode } }} onclickoutside={closeMenu} class="w-[12rem] p-4 absolute top-16 right-10 md:right-32 lg:right-48 xl:right-64 2xl:right-96 z-50 flex flex-col rounded shadow bg-foreground">
-		<a href="/user/{data.user.id}" class="flex flex-col items-center">
+		<a href="/user/{data.user.id}" onclick={closeMenu} class="flex flex-col items-center">
 			<img src="{data.user.avatar || DefaultProfile}" alt="User's Profile" class="w-20 h-20 mb-2 object-cover rounded-full">
 			<span class="text-xl font-bold">{data.user?.username}</span>
 			<div class="px-1.5 py-0.5 flex items-center space-x-1.5 rounded bg-accent">
 				<IconCoins />
-				<span class="text-sm">{data.wallet.coins}</span>
+				<span class="text-sm">{data.balance!.coins}</span>
 			</div>
 		</a>
 		
@@ -60,10 +73,10 @@
 		<a href="/bookmarks" onclick={closeMenu} class="py-0.5 text-left transition-all hover:font-medium">My Bookmarks</a>
 		<a href="/user/{data.user.id}" onclick={closeMenu} class="py-0.5 text-left transition-all hover:font-medium">My Profile</a>
 		<a href="/my-novels" onclick={closeMenu} class="py-0.5 text-left transition-all hover:font-medium">My Novels</a>
-		<a href="/transactions" onclick={closeMenu} class="py-0.5 text-left transition-all hover:font-medium">My Transactions</a>
 
 		<hr class="my-3">
 
+		<a href="/transactions" onclick={closeMenu} class="py-0.5 text-left transition-all hover:font-medium">Transactions History</a>
 		<a href="/coin-store" onclick={closeMenu} class="py-0.5 text-left transition-all hover:font-medium">Coin Store</a>
 		<a href="/help" onclick={closeMenu} class="py-0.5 text-left transition-all hover:font-medium">Help</a>
 
@@ -81,7 +94,7 @@
 		<!-- <input type="search" name="searchbar"> -->
 		<div class="mr-2 flex items-center relative">
 			<IconSearch class="absolute right-[10px]" weight="bold" size={18} color="#ffffff" />
-			<input type="search" placeholder="Search" name="searchbar" class="w-[20rem] pl-3.5 pr-8 py-1.5 rounded-md border-transparent font-medium text-white placeholder:text-white focus:placeholder:text-transparent bg-foreground-alt">
+			<input type="search" placeholder="Search" name="searchbar" onkeydown={searchNovel} class="w-[20rem] pl-3.5 pr-8 py-1.5 rounded-md border-transparent font-medium text-white placeholder:text-white focus:placeholder:text-transparent bg-foreground-alt">
 		</div>
 	</div>
 {/if}
@@ -97,7 +110,7 @@
 	<div class="flex">
 		<div class="mr-2 hidden md:flex items-center relative">
 			<IconSearch class="absolute right-[10px]" weight="bold" size={18} color="#ffffff" />
-			<input type="search" placeholder="Search" name="searchbar" class="w-[20rem] pl-3.5 pr-8 py-1.5 rounded-md border-transparent font-medium text-white placeholder:text-white focus:placeholder:text-transparent bg-foreground-alt">
+			<input type="search" placeholder="Search" name="searchbar" onkeydown={searchNovel} class="w-[20rem] pl-3.5 pr-8 py-1.5 rounded-md border-transparent text-white placeholder:text-white focus:placeholder:text-transparent bg-foreground-alt">
 		</div>
 		<button type="button" onclick={() => showSearch = !showSearch} class="mr-4 md:hidden">
 			<IconSearch weight="bold" size={20} color="#ffffff" />
@@ -117,7 +130,7 @@
 	</div>
 </nav>
 
-<main class="max-w-screen min-h-full my-8 mx-10 md:mx-32 lg:mx-48 xl:mx-64 2xl:mx-96">
+<main class="max-w-screen min-h-[28rem] my-8 mx-10 md:mx-32 lg:mx-48 xl:mx-64 2xl:mx-96">
 	{@render children()}
 </main>
 

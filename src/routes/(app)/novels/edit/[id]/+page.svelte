@@ -19,7 +19,7 @@
     let selectedCategories:string[] = $state(form?.data.categories || initialNovel.categories);
     let synopsisValue:string = $state(form?.data.synopsis || initialNovel.synopsis);
     let coverValue:any = $state(initialNovel.cover);
-    
+
     onMount(async () => {
         enhance(formElement, ({ formData }) => {
             selectedCategories.forEach((category) => {
@@ -30,6 +30,7 @@
     });
 
     $effect(() => {
+        console.log(`cover value: ${JSON.stringify(coverValue)}`);
         if (form?.error) {
             titleValue = form.data.title;
             selectedCategories = form.data.categories;
@@ -39,7 +40,6 @@
                 class: 'bg-red-500 border-none'
             });
         }
-        console.log(titleValue);
     });
 
     function onItemSelected(id:string) {

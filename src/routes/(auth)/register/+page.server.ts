@@ -39,9 +39,9 @@ export const actions: Actions = {
         try {
             const newUser = await locals.pb.collection('users').create(data);
 
-            await locals.pb.collection('wallet').create({
+            await locals.pb.collection('balances').create({
                 user: newUser.id,
-                coins: 50,
+                coins: 100,
             });
 
             locals.pb.authStore.clear();

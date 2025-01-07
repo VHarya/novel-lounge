@@ -19,8 +19,8 @@
     </a>
     <div class="flex">
         <a href="/" class="px-4 py-1">Home</a>
-        <a href="/" class="px-4 py-1">Novel List</a>
-        <a href="#" class="px-4 py-1">Support</a>
+        <a href="/novel" class="px-4 py-1">Novel List</a>
+        <a href="/" class="px-4 py-1">Support</a>
         <div class="mx-4 border-l"></div>
         <a href="/login" class="px-4 py-1 font-bold">Daftar</a>
         <a href="/register" class="px-4 py-1 font-bold">Login</a>

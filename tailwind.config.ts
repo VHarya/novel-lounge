@@ -18,7 +18,7 @@ export default {
         'background': '#1A1A1A',
         'background-alt': '#1F1F1F',
         'foreground': '#2F2F2F',
-        'foreground-alt': '#252525',
+        'foreground-alt': '#282828',
         'accent': '#18748C',
         'success': '#059669',
         'warning': '#d97706',

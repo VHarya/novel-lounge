@@ -33,6 +33,8 @@ export const actions: Actions = {
         let synopsis = formData.get('synopsis') as string;
         let cover = formData.get('cover') as File;
 
+        console.log(`cover: ${cover}`);
+
         if (title === '') {
             return {
                 error: true,

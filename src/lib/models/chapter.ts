@@ -7,5 +7,6 @@ export interface Chapter {
     novel:string;
     created:string|Date;
     price:number;
+    isOwned:any|boolean;
     expand:any|Object;
 }

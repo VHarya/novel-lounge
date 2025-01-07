@@ -6,8 +6,8 @@
     import { onMount } from 'svelte';
     
     import CardCoins from '$lib/components/cardCoins.svelte';
+    import IconCart from 'phosphor-svelte/lib/ShoppingCartSimple';
     import { toast } from 'svelte-sonner';
-    import { goto } from '$app/navigation';
 
     let { data }: { data: PageData } = $props();
     const user = data.user;
@@ -54,11 +54,14 @@
         const data = await result.json();
 
         if (window.snap && browser) {
+            loading = false;
             window.snap.pay(data.token, {
                 onSuccess: () => {
                     toast.success("Successfully Purchased!", { class: "bg-success" });
                 },
-                onPending: () => {},
+                onPending: () => {
+                    console.log("Payment Pending...");
+                },
                 onError: (result: any) => {
                     toast.error("An error has occured!", { class: "bg-error" });
                     
@@ -68,23 +71,34 @@
                     console.log('----- JSON Error Result -----');
                     console.log(JSON.stringify(result));
                 },
-                onClose: () => {}
+                onClose: () => {
+                    toast.info("You can find the transactions in Transaction History!");
+                }
             });
         }
     }
 </script>
 
+{#if loading}
+    <div class="w-screen h-screen absolute top-0 left-0 -z-50 bg-black/50"></div>
+{/if}
+
 {#if showWarning}
     <div role="button" tabindex="-1" onclick={(e) => showWarning = false} onkeydown={() => {}} class="w-screen h-screen fixed top-0 left-0 flex justify-center items-center cursor-default bg-black/50">
-        <div role="button" tabindex="-1" onclick={(e) => e.stopPropagation} onkeydown={() => {}} class="w-fit p-4 cursor-default bg-background-alt">
-            <span class="text-xl font-bold">Are you sure?</span>
-            <p class="prose mb-4">
+        <div role="button" tabindex="-1" onclick={(e) => e.stopPropagation} onkeydown={() => {}} class="w-fit p-4 flex flex-col items-center cursor-default bg-background-alt">
+            <div class="w-fit mb-2 p-2 rounded-full bg-accent/60">
+                <div class="p-4 rounded-full bg-accent/80">
+                    <IconCart size="2rem"/>
+                </div>
+            </div>
+            <span class="mb-0.5 text-2xl font-bold">Are you sure?</span>
+            <p class="mb-4 text-center">
                 You will be buying <strong>{selectedPricing.coins} coins</strong>, which costs <strong>{selectedPricing.price}</strong>. <br>
                 Do you wish to continue the transaction?
             </p>
-            <div class="flex space-x-2">
-                <button onclick={() => { selectedPricing = null; showWarning = true; }} class="w-full p-1.5 bg-foreground-alt hover:bg-foreground">Cancel</button>
-                <button onclick={() => buyCoin(selectedPricing.coins, selectedPricing.price)} class="w-full p-1.5 bg-foreground-alt hover:bg-foreground">Continue</button>
+            <div class="w-full flex space-x-2">
+                <button onclick={() => { selectedPricing = null; showWarning = true; }} class="w-full p-1.5 rounded bg-foreground-alt hover:bg-foreground active:bg-foreground-alt/80">Cancel</button>
+                <button onclick={() => buyCoin(selectedPricing.coins, selectedPricing.price)} class="w-full p-1.5 rounded bg-foreground-alt hover:bg-foreground active:bg-foreground-alt/80">Continue</button>
             </div>
         </div>
     </div>
@@ -99,7 +113,7 @@
 </div>
 
 <div class="flex flex-col space-y-4">
-    {#each data.pricing.items as item}
+    {#each data.pricings.items as item}
         <CardCoins coin={item.coins} price={item.price} onclick={() => { selectedPricing = item; showWarning = true; }}/>
     {/each}
 </div>

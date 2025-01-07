@@ -20,7 +20,7 @@
 
 	let { value = $bindable(), onchange } : Props = $props();
 
-	let editorElement:HTMLDivElement;
+	let editorElement:any|HTMLDivElement = $state();
 	let tiptapEditor:Editor|null = $state(null);
 	let loading:boolean = $state(false);
 

@@ -4,5 +4,6 @@ export interface User {
     firstName:string;
     lastName:string;
     avatar:string;
+    balance:string;
     created:Date|string;
 }

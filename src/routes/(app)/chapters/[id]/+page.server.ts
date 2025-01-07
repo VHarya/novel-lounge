@@ -9,7 +9,7 @@ export const load = (async ({ locals, params }) => {
 
     const chapter = await locals.pb.collection('chapters').getOne<Chapter>(chapterId, { expand: "novel" });
     
-    if (chapter.price > 0) {
+    if (chapter.price > 0 && locals.user.id !== chapter.expand.novel.author) {
         await locals.pb
             .collection('ownedChapters')
             .getFirstListItem(`user.id = '${locals.user.id}' && chapter.id = '${chapter.id}'`)

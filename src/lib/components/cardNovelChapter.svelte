@@ -30,14 +30,10 @@
                             </a>
                             <span class="text-xs">{formatToTimeAgo(chapter.created)}</span>
                         </div>
-                        {#if chapter.price > 0}
+                        {#if chapter.price > 0 && !chapter.isOwned}
                             <div class="w-14 h-fit ml-2 px-2 py-1 flex justify-center items-center rounded bg-accent">
                                 <IconCoins size={12} />
                                 <span class="ml-1 text-sm">{chapter.price}</span>
-                            </div>
-                        {:else}
-                            <div class="w-14 h-fit ml-2 px-2 py-1 flex justify-center items-center rounded bg-success">
-                                <span class="text-sm">Free</span>
                             </div>
                         {/if}
                     </li>
