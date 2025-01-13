@@ -63,7 +63,7 @@
     {#if data.newChapters.length > 0}
         <div class="max-h-[50rem] grid xl:grid-cols-2 xl:grid-rows-3 grid-cols-1 grid-rows-1 bg-background-alt">
             {#each data.newChapters as item}
-                <NovelChapterCard novel={item} />
+                <NovelChapterCard novel={item} currentUser={data.user} />
             {/each}
         </div>
     {:else}

@@ -1,11 +1,14 @@
 <script lang="ts">
+    import type { Novel } from '$lib/models/novel';
+    import type { User } from '$lib/models/user';
+
     import IconPerson from 'phosphor-svelte/lib/UserCircle';
     import IconCoins from 'phosphor-svelte/lib/Coins';
 
     import PlaceholderImage from '$lib/images/cover-placeholder.png';
     import { formatChapterTitle, formatToTimeAgo } from '$lib/utils';
     
-    const { novel } = $props();
+    const { novel, currentUser }: { novel: any, currentUser: User } = $props();
 </script>
 
 <div class="max-h-64 w-full p-4 flex rounded bg-background-alt">
@@ -30,7 +33,7 @@
                             </a>
                             <span class="text-xs">{formatToTimeAgo(chapter.created)}</span>
                         </div>
-                        {#if chapter.price > 0 && !chapter.isOwned}
+                        {#if chapter.price > 0 && !chapter.isOwned && novel.author !== currentUser.id}
                             <div class="w-14 h-fit ml-2 px-2 py-1 flex justify-center items-center rounded bg-accent">
                                 <IconCoins size={12} />
                                 <span class="ml-1 text-sm">{chapter.price}</span>

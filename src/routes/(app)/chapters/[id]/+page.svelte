@@ -12,12 +12,12 @@
 </svelte:head>
 
 <div class="flex flex-col">
-    <a href="/novels/{data.novel.id}" class="mb-2 flex items-center">
-        <IconBackArrow weight="bold" class="w-5 h-5 mr-2"/>
-        <h1 class="text-2xl font-bold">{data.novel.title}</h1>
+    <a href="/novels/{data.novel.id}" class="mb-1 flex items-center">
+        <h1 class="border-b-2 border-transparent hover:border-white text-2xl font-bold">{data.novel.title}</h1>
     </a>
-    <h2 class="mb-2 text-lg font-medium">{formatChapterTitle(data.chapter.chapter, data.chapter.title)}</h2>
-    <article class="min-h-[50vh] mb-6 prose prose-p:mb-2">{@html data.chapterContent.content}</article>
+    <h2 class="mb-4 text-lg font-medium">{formatChapterTitle(data.chapter.chapter, data.chapter.title)}</h2>
+    <hr class="mb-4">
+    <article class="min-h-[50vh] mb-6 prose prose-p:mb-4">{@html data.chapterContent.content}</article>
 </div>
 
 <div class="flex justify-end space-x-4">
