@@ -18,19 +18,24 @@
     let titleValue:string = $state(form?.data.title || initialNovel.title);
     let selectedCategories:string[] = $state(form?.data.categories || initialNovel.categories);
     let synopsisValue:string = $state(form?.data.synopsis || initialNovel.synopsis);
-    let coverValue:any = $state(initialNovel.cover);
+
+    let isLoading = $state(false);
 
     onMount(async () => {
         enhance(formElement, ({ formData }) => {
-            selectedCategories.forEach((category) => {
-                formData.append('category[]', category);
-            })
+            isLoading = true;
+
+            selectedCategories.forEach((category) => { formData.append('category[]', category) });
             formData.set('synopsis', synopsisValue);
+
+            return async ({ result, update }) => {
+                isLoading = false;
+                update();
+            }
         });
     });
 
     $effect(() => {
-        console.log(`cover value: ${JSON.stringify(coverValue)}`);
         if (form?.error) {
             titleValue = form.data.title;
             selectedCategories = form.data.categories;
@@ -52,6 +57,10 @@
         }
     }
 </script>
+
+{#if isLoading}
+    <div class="w-screen h-screen fixed top-0 left-0 z-50 bg-black/35"></div>
+{/if}
 
 <div class="mb-4">
     <h1 class="text-3xl font-bold font-lexend">Update a novel</h1>
@@ -78,7 +87,7 @@
     <div class="w-full mb-4 flex flex-col space-x-0 space-y-4 xl:flex-row xl:space-x-4 xl:space-y-0">
         <div class="w-fit flex flex-col">
             <label for="synopsis" class="mb-1 font-semibold">Cover</label>
-            <ImageField bind:value={coverValue}/>
+            <ImageField name="cover" value={initialNovel.cover}/>
         </div>
         <div class="w-full flex flex-col">
             <div class="mb-4 flex flex-col">

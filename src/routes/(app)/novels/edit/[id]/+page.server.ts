@@ -5,7 +5,6 @@ import { convertFilenameToFileURL } from '$lib/utils';
 import type { Actions, PageServerLoad } from './$types';
 
 import { redirect } from '@sveltejs/kit';
-import { toast } from 'svelte-sonner';
 
 export const load = (async ({ locals, params }) => {
     const novelId = params.id;
@@ -33,8 +32,6 @@ export const actions: Actions = {
         let synopsis = formData.get('synopsis') as string;
         let cover = formData.get('cover') as File;
 
-        console.log(`cover: ${cover}`);
-
         if (title === '') {
             return {
                 error: true,
@@ -52,10 +49,9 @@ export const actions: Actions = {
         }
 
         try {
-            if (cover) {
+            if (cover.size > 0) {
                 const coverFileExt = cover.name.split('.').pop();
                 cover = new File([cover], `${title}.${coverFileExt}`, { type: cover.type });
-                console.log(cover);
 
                 await locals.pb.collection('novels').update(novelId, {
                     title: title,
