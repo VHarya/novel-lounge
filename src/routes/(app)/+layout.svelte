@@ -37,12 +37,7 @@
 		if (event.key !== "Enter") return;
 
 		const title = event.target.value;
-		if (title) {
-			goto(`/novels?title=${title}`);
-		}
-		else {
-			goto('/novels');
-		}
+		goto(`/novels?title=${title}`);
 	}
 
 	async function logout() {

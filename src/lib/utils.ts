@@ -16,7 +16,7 @@ export function convertFilenameToFileURL(baseFilesUrl:string, collection:string,
 
 export function formatToShortDate(date:Date|string): string {
     const dt = new Date(date);
-    return `${dt.getDate().toString().padStart(2, '0')}-${dt.getMonth().toString().padStart(2, '0')}-${dt.getFullYear().toString()}`
+    return dt.toLocaleString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
 }
 
 export function formatFileSize(bytes:number) {
@@ -31,8 +31,8 @@ export function formatFileSize(bytes:number) {
     return `${bytes.toFixed(2)} ${units[i]}`;
 }
 
-export function formatChapterTitle(chapterNumber:number|null, chapterTitle:string) {
-    return `Chapter ${chapterNumber} - ${chapterTitle}`.trim();
+export function formatChapterTitle(chapter:number|null, title:string) {
+    return title ? `Chapter ${chapter} - ${title}` : `Chapter ${chapter}`;
 }
 
 export function formatToTimeAgo(date:Date|string) : string {

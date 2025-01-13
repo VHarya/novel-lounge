@@ -8,6 +8,7 @@ export const load = (async ({ locals, params, url }) => {
     const novelId = params.id;
     const sort = url.searchParams.get('sort') || 'newest';
     const page = parseInt(url.searchParams.get('page') || '1');
+    let bookmark;
 
     const novel = await locals.pb.collection('novels').getOne<Novel>(novelId, {
         expand: 'author'
@@ -22,27 +23,33 @@ export const load = (async ({ locals, params, url }) => {
         sort: sort === 'newest' ? '-chapter' : 'chapter',
     });
 
-    const ownedChapters = await locals.pb.collection('ownedChapters').getList(1, 2, {
-        filter: `chapter.novel.id = '${novel.id}' && user = '${locals.user.id}'`,
-        sort: '-chapter'
-    });
+    if (locals.user) {
+        bookmark = await locals.pb.collection('bookmarks').getList(1, 1, {
+            filter: `novel = '${novelId}' && user = '${locals.user.id}'`
+        });
+
+        const ownedChapters = await locals.pb.collection('ownedChapters').getFullList({
+            filter: `chapter.novel.id = '${novel.id}' && user = '${locals.user.id}'`,
+            sort: '-chapter'
+        });
+
+        chapters.items = chapters.items.map((chapter) => {
+            for (const ownedChapter of ownedChapters) {
+                if (chapter.id === ownedChapter.chapter) {
+                    chapter.isOwned = true;
+                    return chapter;
+                }
+
+                chapter.isOwned = false;
+            }
+            return chapter;
+        });
+    }
 
     return {
         userId: locals.user,
         novel: novel,
-        chapters: {
-            ...chapters,
-            items: chapters.items.map((chapter) => {
-                for (const ownedChapter of ownedChapters.items) {
-                    if (chapter.id === ownedChapter.chapter) {
-                        chapter.isOwned = true;
-                        return chapter;
-                    }
-    
-                    chapter.isOwned = false;
-                }
-                return chapter;
-            }),
-        },
+        chapters: chapters,
+        bookmark: bookmark ? bookmark.items[0] : null,
     };
 }) satisfies PageServerLoad;

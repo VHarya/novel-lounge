@@ -1,7 +1,6 @@
 import type { Category } from '$lib/models/category';
 import { redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { toast } from 'svelte-sonner';
 
 export const load = (async ({ locals }) => {
     const categories = await locals.pb.collection('categories').getFullList<Category>({

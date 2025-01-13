@@ -18,12 +18,14 @@
     import { formatChapterTitle, formatToTimeAgo } from '$lib/utils';
     import { page } from '$app/state';
     import { goto } from '$app/navigation';
+    import { toast } from 'svelte-sonner';
 
 
     let { data }: { data: PageData } = $props();
     const novel = data.novel;
     const user = data.user;
 
+    let isBookmarked = $state(data.bookmark ? true : false);
     let chapters = $state(data.chapters);
     let showRatingModal = $state(false);
 
@@ -48,6 +50,49 @@
         currentPage = page;
         searchParams.set('page', page.toFixed(0));
         goto(`?${searchParams}`);
+    }
+
+    async function addBookmark() {
+        const response = await fetch("/api/bookmarks/add", {
+            method: 'post',
+            body: JSON.stringify({
+                'novel_id': novel.id
+            }),
+            headers: {
+                'content-type': 'application/json'
+            },
+        });
+        
+        const responseBody = await response.json();
+
+        if (response.status != 200) {
+            toast.error(responseBody['message']);
+            isBookmarked = false;
+            return;
+        }
+        
+        isBookmarked = true;
+    }
+    async function deleteBookmark() {
+        const response = await fetch("/api/bookmarks/remove", {
+            method: 'post',
+            body: JSON.stringify({
+                'bookmark_id': data.bookmark?.id
+            }),
+            headers: {
+                'content-type': 'application/json'
+            },
+        });
+        
+        const responseBody = await response.json();
+
+        if (response.status != 200) {
+            toast.error(responseBody['message']);
+            isBookmarked = true;
+            return;
+        }
+        
+        isBookmarked = false;
     }
 </script>
 
@@ -85,7 +130,7 @@
                 <span class="ml-1 text-sm">20k</span>
             </div>
         </div>
-        <div class="h-full max-h-full my-2 pr-3.5 overflow-scroll text-sm">
+        <div class="h-full max-h-full my-2 pr-3.5 overflow-scroll prose prose-base sm:prose-sm prose-p:mb-2">
             {@html novel.synopsis}
         </div>
         <div class="flex space-x-2">
@@ -95,10 +140,17 @@
                     <span>Create New Chapter</span>
                 </a>
             {/if}
-            <button class="p-2 flex items-center space-x-1 rounded bg-foreground">
-                <IconBookmark size="1.2rem"/>
-                <span>Add to Bookmark</span>
-            </button>
+            {#if isBookmarked}
+                <button onclick={deleteBookmark} class="p-2 flex items-center space-x-1 rounded bg-foreground">
+                    <IconBookmark size="1.2rem" weight="fill"/>
+                    <span>Remove Bookmark</span>
+                </button>
+            {:else}
+                <button onclick={addBookmark} class="p-2 flex items-center space-x-1 rounded bg-foreground">
+                    <IconBookmark size="1.2rem"/>
+                    <span>Add to Bookmark</span>
+                </button>
+            {/if}
             <button class="p-2 flex items-center space-x-1 rounded bg-foreground">
                 <IconBookOpen size="1.2rem"/>
                 <span>Read First Chapter</span>

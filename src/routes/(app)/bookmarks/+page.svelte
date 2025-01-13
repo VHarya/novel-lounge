@@ -4,10 +4,12 @@
     import IconSearch from 'phosphor-svelte/lib/MagnifyingGlass';
     import IconCaretUpDown from 'phosphor-svelte/lib/CaretUpDown';
     import IconEmpty from 'phosphor-svelte/lib/WarningOctagon';
+    import IconBookmark from 'phosphor-svelte/lib/BookmarkSimple';
 
     import { fade, slide } from 'svelte/transition';
     import DefaultCover from '$lib/images/cover-placeholder.png';
-    import { convertFilenameToFileURL } from '$lib/utils';
+    import { toast } from 'svelte-sonner';
+    import { browser } from '$app/environment';
 
     let { data }: { data: PageData } = $props();
 
@@ -39,9 +41,34 @@
         if (filterCategories.includes(id)) {
             const index = filterCategories.indexOf(id);
             filterCategories.splice(index, 1);
+            console.log(`filter: ${filterCategories}`);
         }
         else {
             filterCategories.push(id);
+        }
+    }
+    
+    async function deleteBookmark(e:MouseEvent, bookmarkId:any) {
+        e.stopPropagation();
+        const response = await fetch("/api/bookmarks/remove", {
+            method: 'post',
+            body: JSON.stringify({
+                'bookmark_id': bookmarkId
+            }),
+            headers: {
+                'content-type': 'application/json'
+            },
+        });
+        
+        const responseBody = await response.json();
+
+        if (response.status != 200) {
+            toast.error(responseBody['message']);
+            return;
+        }
+
+        if (browser) {
+            location.reload();
         }
     }
 </script>
@@ -97,15 +124,20 @@
     </div>
 </form>
 
-{#if data.novels.items.length > 0}
+{#if data.bookmarks.items.length > 0}
     <div class="grid 3xl:grid-cols-4 xl:grid-cols-4 lg:grid-cols-2 grid-cols-1 gap-14">
-        {#each data.novels.items as novel}
-            <a href="/novels/{novel.id}" class="relative hover:scale-[101%]">
-                <img src={novel.cover || DefaultCover} alt="Novel Cover" class="rounded object-cover object-center">
-                <span class="w-full p-4 absolute bottom-0 left-0 transition bg-gradient-to-t from-black/60 to-transparent">
-                    {novel.title}
-                </span>
-            </a>
+        {#each data.bookmarks.items as bookmark}
+            <div class="relative">
+                <a href="/novels/{bookmark.expand?.novel.id}" class="relative">
+                    <img src={bookmark.expand?.novel.cover || DefaultCover} alt="Novel Cover" class="rounded object-cover object-center">
+                </a>
+                <div class="w-full p-4 absolute bottom-0 left-0 flex justify-between transition bg-gradient-to-t from-black/60 to-transparent">
+                    <span>{bookmark.expand?.novel.title}</span>
+                    <button onclick={(event) => deleteBookmark(event, bookmark.id)} class="flex items-center space-x-1 rounded">
+                        <IconBookmark size="1.2rem" weight="fill" class="fill-white hover:fill-warning focus:fill-error"/>
+                    </button>
+                </div>
+            </div>
         {/each}
     </div>
 {:else}

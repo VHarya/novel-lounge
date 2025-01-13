@@ -74,7 +74,7 @@
     <div class="w-full mb-4 flex flex-col space-x-0 space-y-4 xl:flex-row xl:space-x-4 xl:space-y-0">
         <div class="w-fit flex flex-col">
             <label for="synopsis" class="mb-1 font-semibold">Cover</label>
-            <ImageField bind:value={coverValue}/>
+            <ImageField name='cover' value={coverValue}/>
         </div>
         <div class="w-full flex flex-col space-y-4">
             <div class="flex flex-col">

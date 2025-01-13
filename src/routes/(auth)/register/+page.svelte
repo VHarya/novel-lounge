@@ -18,7 +18,7 @@
                 <input type="text" name="username" value="{form?.data.username}" required class="w-full border-none rounded text-white bg-foreground-alt">
             </div>
             
-            <div class="mb-2 flex">
+            <div class="mb-2 flex space-x-4">
                 <div class="w-full">
                     <label for="firstName" class="font-semibold">First Name</label>
                     <input type="text" name="firstName" value="{form?.data.firstName}" required class="w-full border-none rounded text-white bg-foreground-alt">

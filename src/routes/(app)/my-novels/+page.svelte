@@ -65,7 +65,7 @@
     <ul class="my-10 grid grid-cols-4 gap-4">
         {#each novels.items as novel}
             <li class="p-4 flex flex-col rounded bg-background-alt">
-                <img src={novel.cover || DefaultCover} alt="'{novel.title}' Cover" class="h-fit w-full aspect-[5/7] object-cover rounded">
+                <img src={novel.cover || DefaultCover} alt="'{novel.title}' Cover" class="h-fit w-full aspect-[5/7] object-contain rounded bg-foreground">
                 <div class="h-full flex flex-col justify-between">
                     <div class="mb-2 flex flex-col">
                         <h2 class="text-xl font-bold line-clamp-1">{novel.title}</h2>
@@ -75,19 +75,11 @@
                         <a href="/novels/{novel.id}" class="w-full px-2 py-1 rounded text-sm font-bold bg-accent/95 hover:bg-accent">Show Details</a>
                         <div class="flex space-x-2">
                             <a href="/novels/edit/{novel.id}" class="w-full px-2 py-1 rounded text-sm font-bold bg-yellow-500/95 hover:bg-yellow-500">Edit Novel</a>
-                            <!-- <form action="?/delete" method="post" onsubmit={onSubmit} class="w-full">
-                                <input type="text" name="novel-id" value={novel.id} hidden>
-                                <button type="submit" class="w-full px-2 py-1 rounded text-sm font-bold bg-red-500/95 hover:bg-red-500">Delete Novel</button>
-                            </form> -->
                             <button type="button" onclick={() => deleteNovel(novel.id)} class="w-full px-2 py-1 rounded text-sm font-bold bg-red-500/95 hover:bg-red-500">Delete Novel</button>
-                            <!-- <a href="/novels/delete/{novel.id}" class="w-full px-2 py-1 rounded text-sm font-bold bg-red-500/95 hover:bg-red-500">Delete Novel</a> -->
                         </div>
                     </div>
                 </div>
             </li>
         {/each}
-        <!-- <li class="h-[22rem] aspect-[5/7] relative">
-            <img src="{DefaultCover}" alt="novel cover" class="rounded">
-        </li> -->
     </ul>
 </div>
