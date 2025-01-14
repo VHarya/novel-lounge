@@ -5,6 +5,8 @@ export const load: LayoutServerLoad = async ({ locals }) => {
         return {}
     }
 
-    const balance = await locals.pb.collection('balances').getOne(locals.user.balance);
-    return { user: locals.user, balance }
+    return {
+        user: locals.user,
+        balance: locals.balance
+    }
 };

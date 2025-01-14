@@ -1,3 +1,5 @@
+import type { Balance } from '$lib/models/balance';
+import type { User } from '$lib/models/user';
 import PocketBase from 'pocketbase';
 import User from '$lib/models/user';
 import Midtrans from 'midtrans-client';
@@ -9,7 +11,8 @@ declare global {
 		// interface Error {}
 		interface Locals {
 			pb: PocketBase,
-			user: User,
+			user: User|null,
+			balance: Balance|null,
 		}
 		// interface PageData {}
 		// interface PageState {}
