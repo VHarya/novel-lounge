@@ -56,9 +56,9 @@
 	<div use:clickoutside={{ limit: { parent: menuParentNode } }} onclickoutside={closeMenu} class="w-[12rem] p-4 absolute top-16 right-10 md:right-32 lg:right-48 xl:right-64 2xl:right-96 z-50 flex flex-col rounded shadow bg-foreground">
 		<a href="/user/{data.user.id}" onclick={closeMenu} class="flex flex-col items-center">
 			<img src="{data.user.avatar || DefaultProfile}" alt="User's Profile" class="w-20 h-20 mb-2 object-cover rounded-full">
-			<span class="text-xl font-bold">{data.user?.username}</span>
-			<div class="px-1.5 py-0.5 flex items-center space-x-1.5 rounded bg-accent">
-				<IconCoins />
+			<span class="mb-1 text-xl font-bold">{data.user?.username}</span>
+			<div class="px-3 py-1 flex items-center rounded-full text-sm bg-accent">
+				<IconCoins class="mr-1"/>
 				<span class="text-sm">{data.balance!.coins}</span>
 			</div>
 		</a>

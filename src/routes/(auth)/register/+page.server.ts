@@ -8,7 +8,14 @@ export const load = (async () => {
 export const actions: Actions = {
     register: async ({ locals, request }) => {
         const formData = await request.formData();
-        const data = Object.fromEntries([...formData]);
+        const data = {
+            username: formData.get('username') as string,
+            firstName: formData.get('firstName') as string,
+            lastName: formData.get('lastName') as string,
+            email: formData.get('email') as string,
+            password: formData.get('password') as string,
+            passwordConfirm: formData.get('passwordConfirm') as string,
+        };
 
         if (data.password.toString().length < 5) {
             return {
@@ -37,19 +44,26 @@ export const actions: Actions = {
         }
 
         try {
-            const newUser = await locals.pb.collection('users').create(data);
+            const user = await locals.pb.collection('users').create(data);
 
-            await locals.pb.collection('balances').create({
-                user: newUser.id,
+            const balance = await locals.pb.collection('balances').create({
+                user: user.id,
                 coins: 100,
+            });
+
+            const userLogin = await locals.pb.collection('users').authWithPassword(data.email, data.password);
+
+            await locals.pb.collection('users').update(userLogin.record.id, {
+                username: user.username,
+                balance: balance.id,
             });
 
             locals.pb.authStore.clear();
         } catch (error:any) {
-            console.log("PB Error: ", JSON.stringify(error));
+            console.log("Register PB Error: ", JSON.stringify(error));
             return {
                 error: true,
-                message: error.response.message,
+                message: "An error occured when trying to register",
                 data: {
                     username: data.username,
                     email: data.email,
@@ -57,6 +71,6 @@ export const actions: Actions = {
             };
         }
 
-        throw redirect(303, '/login');
+        redirect(303, '/login');
     },
 };

@@ -101,7 +101,7 @@
     <div class="grid 3xl:grid-cols-4 xl:grid-cols-4 lg:grid-cols-2 grid-cols-1 gap-14">
         {#each data.novels.items as novel}
             <a href="/novels/{novel.id}" class="relative hover:scale-[101%]">
-                <img src={novel.cover || DefaultCover} alt="Novel Cover" class="rounded object-cover object-center">
+                <img src={novel.cover || DefaultCover} alt="Novel Cover" class="w-fit h-full aspect-[5/7] rounded object-contain object-center bg-foreground-alt">
                 <span class="w-full p-4 absolute bottom-0 left-0 transition bg-gradient-to-t from-black/60 to-transparent">
                     {novel.title}
                 </span>

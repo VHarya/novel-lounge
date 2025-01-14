@@ -19,6 +19,7 @@
     import { page } from '$app/state';
     import { goto } from '$app/navigation';
     import { toast } from 'svelte-sonner';
+    import { browser } from '$app/environment';
 
 
     let { data }: { data: PageData } = $props();
@@ -73,11 +74,12 @@
         
         isBookmarked = true;
     }
-    async function deleteBookmark() {
+    async function deleteBookmark(e:MouseEvent, bookmarkId:any) {
+        e.stopPropagation();
         const response = await fetch("/api/bookmarks/remove", {
             method: 'post',
             body: JSON.stringify({
-                'bookmark_id': data.bookmark?.id
+                'bookmark_id': bookmarkId
             }),
             headers: {
                 'content-type': 'application/json'
@@ -88,11 +90,12 @@
 
         if (response.status != 200) {
             toast.error(responseBody['message']);
-            isBookmarked = true;
             return;
         }
-        
-        isBookmarked = false;
+
+        if (browser) {
+            location.reload();
+        }
     }
 </script>
 
@@ -141,7 +144,7 @@
                 </a>
             {/if}
             {#if isBookmarked}
-                <button onclick={deleteBookmark} class="p-2 flex items-center space-x-1 rounded bg-foreground">
+                <button onclick={(event:MouseEvent) => deleteBookmark(event, data.bookmark?.id)} class="p-2 flex items-center space-x-1 rounded bg-foreground">
                     <IconBookmark size="1.2rem" weight="fill"/>
                     <span>Remove Bookmark</span>
                 </button>
